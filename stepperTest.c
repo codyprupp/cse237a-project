@@ -1,9 +1,6 @@
 #include <wiringPi.h>
 #include <stdio.h>
-#include "stepperTest.h"
-
-#define DIR_PIN 0
-#define STEP_PIN 2
+#include "stepper.h"
 
 int main(void) {
     if (wiringPiSetup() == -1) {
@@ -23,17 +20,5 @@ int main(void) {
         playNote(440.00, 1000);
         playNote(493.88, 1000);
         playNote(523.25, 1000);
-    }
-}
-
-void playNote(float frequency, float duration_ms) {
-    float period_ms = (1.0f / frequency) * 1000.0f;
-    printf("period: %f\n", period_ms);
-
-    for (int i = 0; i < duration_ms / period_ms; i++) {
-        digitalWrite(STEP_PIN, HIGH);
-        delayMicroseconds(period_ms * 500);
-        digitalWrite(STEP_PIN, LOW);
-        delayMicroseconds(period_ms * 500);
     }
 }
