@@ -2,6 +2,7 @@
 #define ADS1115_H
 
 #include <stdint.h>
+#include <limits.h>
 
 #define ADS1115_I2C_ADDR 0b1001000 // Configured by shorting ADDR pin to GND
 
@@ -10,13 +11,13 @@
 
 typedef struct {
     int fd;
-    uint16_t a0;
-    uint16_t a1;
-    uint16_t a2;
-    uint16_t a3;
+    int16_t a0;
+    int16_t a1;
+    int16_t a2;
+    int16_t a3;
 } ADS1115;
 
-int ads1115Init(ADS1115* ads1115);
+int ads1115Init(ADS1115* ads1115, char* i2cFileName);
 int ads1115Update(ADS1115* ads1115);
 
 #endif
