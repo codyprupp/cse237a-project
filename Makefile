@@ -2,11 +2,14 @@
 
 all: main stepper-test sensor-test
 
-main: main.o stepper.o ads1115.o
-	gcc main.o stepper.o ads1115.o -o main -lwiringPi
+main: main.o stepper.o ads1115.o music.o
+	gcc main.o stepper.o ads1115.o music.o -o main -lwiringPi
 
 main.o: main.c
 	gcc -c main.c -o main.o -lwiringPi
+
+music.o: music.c
+	gcc -c music.c -o music.o
 
 stepper-test: stepperTest.o stepper.o
 	gcc stepperTest.o stepper.o -o stepperTest -lwiringPi
@@ -27,4 +30,4 @@ ads1115.o: ads1115.c
 	gcc -c ads1115.c -o ads1115.o
 
 clean:
-	rm -rf main.o test.o stepperTest.o ads1115.o stepper.o main test stepperTest
+	rm -rf main.o test.o stepperTest.o ads1115.o stepper.o music.o main test stepperTest

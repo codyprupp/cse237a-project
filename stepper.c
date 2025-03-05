@@ -6,6 +6,10 @@
 const int STEP_PINS[NUM_MOTORS] = {1, 2};
 
 void playNoteDuration(float frequency, float duration_ms, int motor) {
+    if (frequency == 0) {
+        delayMicroseconds(duration_ms * 1000.0f);
+    }
+
     float period_us = (1.0f / (frequency)) * 1000000.0f;
 
     for (int i = 0; i < duration_ms * 1000.0f / period_us; i++) {

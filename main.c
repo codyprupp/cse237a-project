@@ -5,13 +5,14 @@
 #include "ads1115.h"
 #include "stepper.h"
 #include <time.h>
+#include "music.h"
 
 #define ACTUATE_THRESHOLD 0
 
 ADS1115 ads;
 pthread_t updateThread;
 
-float motorPeriods[NUM_MOTORS] = {(1.0f / C) * 1000000.0f, (1.0f / G) * 1000000.0f};//, (1.0f / G) * 1000000.0f, (1.0f / (C*2)) * 1000000.0f};
+float motorPeriods[NUM_MOTORS] = {(1.0f / C4) * 1000000.0f, (1.0f / G4) * 1000000.0f};//, (1.0f / G) * 1000000.0f, (1.0f / (C*2)) * 1000000.0f};
 long long motorHistory[NUM_MOTORS] = {0};
 
 void* updateADS1115(void* arg) {
@@ -52,18 +53,25 @@ int main(void) {
         return 1;
     }
 
-    while (1) {
-        for (int i = 0; i < NUM_MOTORS; i++) {
-            if (ads.a[i] > ACTUATE_THRESHOLD) {
-                actuateMotor(i);
-            }
-        }
+    // while (1) {
+    //     // for (int i = 0; i < NUM_MOTORS; i++) {
+    //     //     if (ads.a[i] > ACTUATE_THRESHOLD) {
+    //     //         actuateMotor(i);
+    //     //     }
+    //     // }
 
-        // printf("\n");
-    }
 
-    close(ads.fd);
+    // }
+
+    playMusic(kids_mgmt_melody);
+    playMusic(kids_mgmt_lower_phrase);
+    playMusic(kids_mgmt_lower_phrase_end_1);
+    playMusic(kids_mgmt_lower_phrase);
+    playMusic(kids_mgmt_lower_phrase_end_2);
+
+    pthread_cancel(updateThread);
     pthread_join(updateThread, NULL);
+    close(ads.fd);
 
     return 0;
 }
