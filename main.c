@@ -4,11 +4,15 @@
 #include <pthread.h>
 #include "ads1115.h"
 #include "stepper.h"
+#include <time.h>
 
 #define ACTUATE_THRESHOLD 0
 
 ADS1115 ads;
 pthread_t updateThread;
+
+float motorPeriods[NUM_MOTORS] = {(1.0f / C) * 1000000.0f, (1.0f / G) * 1000000.0f};//, (1.0f / G) * 1000000.0f, (1.0f / (C*2)) * 1000000.0f};
+long long motorHistory[NUM_MOTORS] = {0};
 
 void* updateADS1115(void* arg) {
     while (1) {
@@ -17,14 +21,28 @@ void* updateADS1115(void* arg) {
     return NULL;
 }
 
+long long getMicroseconds() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec * 1000000LL + ts.tv_nsec / 1000;
+}
+
+// Step motor if period has passed
+void actuateMotor(int motor) {
+    long long curTime = getMicroseconds();
+    if (curTime - motorHistory[motor] > motorPeriods[motor]) {
+        stepMotor(motor);
+        motorHistory[motor] = curTime;
+    }
+}
+
 int main(void) {
     if (wiringPiSetup() < 0) {
         printf("ERROR: wiringPi initialization failed!\n");
         return 1;
     }
 
-    pinMode(DIR_PIN, OUTPUT);
-    pinMode(STEP_PIN, OUTPUT);
+    initMotors();
 
     ads1115Init(&ads, "/dev/i2c-1");
 
@@ -35,17 +53,13 @@ int main(void) {
     }
 
     while (1) {
-        if (ads.a[0] > ACTUATE_THRESHOLD) {
-            playNote(C, 100);
-        } else if (ads.a[1] > ACTUATE_THRESHOLD) {
-            playNote(E, 100);
-        } else if (ads.a[2] > ACTUATE_THRESHOLD) {
-            playNote(G, 100);
-        } else if (ads.a[3] > ACTUATE_THRESHOLD) {
-            playNote(C*2, 100);
-        } 
+        for (int i = 0; i < NUM_MOTORS; i++) {
+            if (ads.a[i] > ACTUATE_THRESHOLD) {
+                actuateMotor(i);
+            }
+        }
 
-        printf("%d %d %d %d\n", ads.a[0], ads.a[1], ads.a[2], ads.a[3]);
+        // printf("\n");
     }
 
     close(ads.fd);

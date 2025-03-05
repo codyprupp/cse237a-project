@@ -2,7 +2,7 @@
 #define STEPPER_H
 
 #define DIR_PIN 0
-#define STEP_PIN 1
+#define NUM_MOTORS 2
 
 // Note frequencies
 #define C 130.81
@@ -13,6 +13,9 @@
 #define A 220.00
 #define B 246.94
 
-void playNote(float frequency, float duration_ms);
+void playNoteDuration(float frequency, float duration_ms, int motor);
+void playNote(float frequency, int motor);
+void initMotors();
+void stepMotor(int motor);
 
 #endif

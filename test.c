@@ -3,20 +3,20 @@
 #include "ads1115.h"
 
 int main(void) {
-    ADS1115 ads;
-    ads1115Init(&ads, "/dev/i2c-1");
+    // ADS1115 ads;
+    // ads1115Init(&ads, "/dev/i2c-1");
 
-    unsigned long long counter = 0;
+    // unsigned long long counter = 0;
 
-    while (1) {
-        ads1115Update(&ads);
+    // while (1) {
+    //     ads1115Update(&ads);
        
-        printf("%llu %d\n", counter, (int16_t)ads.a0);
-        fflush(stdout);
+    //     printf("%llu %d\n", counter, (int16_t)ads.a0);
+    //     fflush(stdout);
 
-        usleep(10 * 1000);
-        counter++;
-    }
+    //     usleep(10 * 1000);
+    //     counter++;
+    // }
     
     return 0;
 }
