@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include "test.h"
-#include "ads1115.h"
 #include <unistd.h>
+#include "ads1115.h"
 
 int main(void) {
     ADS1115 ads;

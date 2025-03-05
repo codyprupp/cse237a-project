@@ -1,6 +1,12 @@
 .PHONY: clean
 
-all: stepper-test sensor-test
+all: main stepper-test sensor-test
+
+main: main.o stepper.o ads1115.o
+	gcc main.o stepper.o ads1115.o -o main -lwiringPi
+
+main.o: main.c
+	gcc -c main.c -o main.o -lwiringPi
 
 stepper-test: stepperTest.o stepper.o
 	gcc stepperTest.o stepper.o -o stepperTest -lwiringPi
@@ -21,4 +27,4 @@ ads1115.o: ads1115.c
 	gcc -c ads1115.c -o ads1115.o
 
 clean:
-	rm -rf test.o stepperTest.o ads1115.o stepper.o test stepperTest
+	rm -rf main.o test.o stepperTest.o ads1115.o stepper.o main test stepperTest

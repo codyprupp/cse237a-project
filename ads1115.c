@@ -19,7 +19,7 @@ int ads1115Init(ADS1115* ads1115, char* i2cFileName) {
         return 1;
     }
 
-    uint8_t buf[3] = {ADS1115_CONFIG, 0b10000100, 0b10000011};
+    uint8_t buf[3] = {ADS1115_CONFIG, 0b11000001, 0b10000011};
     if (write(ads1115->fd, buf, sizeof(buf)) != sizeof(buf)) {
         printf("ERROR: Failed to write config register!\n");
         return 1;
@@ -30,21 +30,30 @@ int ads1115Init(ADS1115* ads1115, char* i2cFileName) {
 
 // Read ADC pins and store in struct
 int ads1115Update(ADS1115* ads1115) {
-    uint8_t buf[1] = {ADS1115_CONVERSION};
-    if (write(ads1115->fd, buf, sizeof(buf)) != sizeof(buf)) {
-        printf("ERROR: Failed to write conversion register address!\n");
-        return 1;
-    }
-    
-    uint8_t rBuf[2];
-    if (read(ads1115->fd, rBuf, sizeof(rBuf)) != sizeof(rBuf)) {
-        perror("ERROR: Failed to read conversion data!\n");
-        return 1;
-    }
+    for (int i = 0; i < NUM_ANALOG_INPUTS; i++) {
+        uint8_t tBuf[3] = {ADS1115_CONFIG, 0b11000001 | (i << 4), 0b10000011};
+        if (write(ads1115->fd, tBuf, sizeof(tBuf)) != sizeof(tBuf)) {
+            printf("ERROR: Failed to write config register!\n");
+            return 1;
+        }
 
-    int16_t rawValue = (rBuf[0] << 8) | rBuf[1];
-    
-    ads1115->a0 = (rawValue < 0) ? 0 : rawValue;
+        usleep(10000);
+
+        tBuf[0] = ADS1115_CONVERSION;
+        if (write(ads1115->fd, tBuf, 1) != 1) {
+            printf("ERROR: Failed to write conversion register address!\n");
+            return 1;
+        }
+        
+        uint8_t rBuf[2];
+        if (read(ads1115->fd, rBuf, sizeof(rBuf)) != sizeof(rBuf)) {
+            perror("ERROR: Failed to read conversion data!\n");
+            return 1;
+        }
+
+        int16_t rawValue = (rBuf[0] << 8) | rBuf[1];
+        ads1115->a[i] = (rawValue < 0) ? 0 : rawValue;
+    }
 
     return 0;     
 }

@@ -9,12 +9,11 @@
 #define ADS1115_CONVERSION  0b00000000
 #define ADS1115_CONFIG      0b00000001
 
+#define NUM_ANALOG_INPUTS   4
+
 typedef struct {
     int fd;
-    int16_t a0;
-    int16_t a1;
-    int16_t a2;
-    int16_t a3;
+    int16_t a[NUM_ANALOG_INPUTS];
 } ADS1115;
 
 int ads1115Init(ADS1115* ads1115, char* i2cFileName);
