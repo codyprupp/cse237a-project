@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 // Maps each motor to its corresponding step GPIO
-const int STEP_PINS[NUM_MOTORS] = {1, 2};
+const int STEP_PINS[NUM_MOTORS] = {2, 3};
 
 void playNoteDuration(float frequency, float duration_ms, int motor) {
     if (frequency == 0) {

@@ -12,7 +12,7 @@
 ADS1115 ads;
 pthread_t updateThread;
 
-float motorPeriods[NUM_MOTORS] = {(1.0f / C4) * 1000000.0f, (1.0f / G4) * 1000000.0f};//, (1.0f / G) * 1000000.0f, (1.0f / (C*2)) * 1000000.0f};
+float motorPeriods[NUM_MOTORS] = {(1.0f / C4) * 1000000.0f, (1.0f / G4) * 1000000.0f};//, (1.0f / G4) * 1000000.0f};//, (1.0f / (C*2)) * 1000000.0f};
 long long motorHistory[NUM_MOTORS] = {0};
 
 void* updateADS1115(void* arg) {
@@ -54,13 +54,29 @@ int main(void) {
     }
 
     // while (1) {
-    //     // for (int i = 0; i < NUM_MOTORS; i++) {
-    //     //     if (ads.a[i] > ACTUATE_THRESHOLD) {
-    //     //         actuateMotor(i);
-    //     //     }
-    //     // }
+    //     if (ads.a[0] > ACTUATE_THRESHOLD) {
+    //         motorPeriods[0] = (1.0f / C4) * 1000000.0f;
+    //     } else if (ads.a[1] > ACTUATE_THRESHOLD) {
+    //         motorPeriods[0] = (1.0f / E4) * 1000000.0f;
+    //     } else {
+    //         motorPeriods[0] = 0;
+    //     }
 
+    //     if (ads.a[2] > ACTUATE_THRESHOLD) {
+    //         motorPeriods[1] = (1.0f / G4) * 1000000.0f;
+    //     } else if (ads.a[3] > ACTUATE_THRESHOLD) {
+    //         motorPeriods[1] = (1.0f / C5) * 1000000.0f;
+    //     } else {
+    //         motorPeriods[1] = 0;
+    //     }
 
+    //     for (int i = 0; i < NUM_MOTORS; i++) {
+    //         // printf("%d ", ads.a[i]);
+    //         if (motorPeriods[i] > 0) {
+    //             actuateMotor(i);
+    //         }
+    //     }
+    //     // printf("\n");
     // }
 
     playMusic(kids_mgmt_melody);

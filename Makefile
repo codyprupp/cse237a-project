@@ -8,7 +8,7 @@ main: main.o stepper.o ads1115.o music.o
 main.o: main.c
 	gcc -c main.c -o main.o -lwiringPi
 
-music.o: music.c
+music.o: music.c music.h
 	gcc -c music.c -o music.o
 
 stepper-test: stepperTest.o stepper.o
@@ -17,7 +17,7 @@ stepper-test: stepperTest.o stepper.o
 stepperTest.o: stepperTest.c
 	gcc -c stepperTest.c -o stepperTest.o -lwiringPi
 
-stepper.o: stepper.c
+stepper.o: stepper.c stepper.h
 	gcc -c stepper.c -o stepper.o -lwiringPi
 
 sensor-test: test.o ads1115.o
@@ -26,7 +26,7 @@ sensor-test: test.o ads1115.o
 test.o: test.c
 	gcc -c test.c -o test.o
 
-ads1115.o: ads1115.c
+ads1115.o: ads1115.c ads1115.h
 	gcc -c ads1115.c -o ads1115.o
 
 clean:
