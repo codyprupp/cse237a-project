@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.io.wavfile as wav
 from scipy.signal import find_peaks
-import os
+from pathlib import Path
 
 def read_wav_file(filename):
     sample_rate, data = wav.read(filename)
@@ -47,8 +47,12 @@ def main(filename):
     notes = [(round(freq,2), round(dur,2)) for freq, dur in zip(frequencies, durations) if freq is not None]
     
     filtered_notes = [(freq, dur) for freq, dur in notes if dur >= 0.07]
-    script_dir = os.path.dirname(os.path.abspath(__file__))  
-    outfile = os.path.join(script_dir, os.path.splitext(os.path.basename(filename))[0] + ".txt")
+    script_dir = Path(__file__).parent
+    notes_dir = script_dir / 'notesfiles'
+    notes_dir.mkdir(parents=True, exist_ok=True)
+    
+    outfile = notes_dir / (Path(filename).stem + ".txt")
+
     with open(outfile, 'w') as file:
         for f, d in filtered_notes:
             file.write(str(f) + ',' + str(d) + '\n')
