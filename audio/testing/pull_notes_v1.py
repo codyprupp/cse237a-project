@@ -15,11 +15,12 @@ note_freqs = {
 }
 
 
-def chroma_to_note_name(frequency):
+def chroma_to_note_name(note_pitch):
     return note_names[note_pitch]
 
 audio_file = sys.argv[1]
 
+# read in audio file
 y, sr = librosa.load(audio_file)
 
 chroma = librosa.feature.chroma_stft(y=y, sr=sr)
@@ -28,11 +29,11 @@ onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
 first = True
 notes = []
 prev_note_duration = 0
-
+#read by onset
 for onset in onset_frames:
   chroma_at_onset = chroma[:, onset]
+  # grab most prominent pitch
   note_pitch = chroma_at_onset.argmax()
-#   print(note_pitch)
   note_name = chroma_to_note_name(note_pitch)
 
   if not first:
@@ -47,6 +48,7 @@ print("Note pitch \t Onset frame \t Note duration")
 for entry in notes:
   print(entry[0],'\t\t',entry[1],'\t\t',entry[2])
 
+#play the notes
 player = musicalbeeps.Player(volume = .3, mute_output = False)
 
 for entry in notes:
