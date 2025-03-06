@@ -2,8 +2,17 @@
 #include <string.h>
 #include <stdio.h>
 #include <libgen.h>
+#include <wiringPi.h>
+#include "../../stepper.h"
+#include "../../music.h"
 
 int main(int argc, char* argv[]) {
+    if (wiringPiSetup() < 0) {
+        printf("ERROR: wiringPi initialization failed!\n");
+        return 1;
+    }
+
+    initMotors();
 
     //grab notes using script:
     char * audiofile = argv[1];
@@ -38,8 +47,12 @@ int main(int argc, char* argv[]) {
 
     float freq, dur;
     while(fscanf(file, "%f,%f", &freq, &dur) == 2) { 
-        //TODO: play the note on the motor
-        printf("temp test line\n");
+        if (notesfile[0] == 'b') {
+            playNoteDuration(freq, dur*500, 0);
+        } else {
+            playNoteDuration(freq, dur * 1000, 0);
+        }
+        printf("%f %s\n", freq, notesfile);
     }
  
     return 0;
