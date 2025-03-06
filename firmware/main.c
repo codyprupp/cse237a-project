@@ -60,15 +60,16 @@ int main(void) {
 
 #if DEMO_MODE == 0
     while (1) {
-        
+        // Schedule a new note if pressure sensor detects input
         if (ads.a[0] > ACTUATE_THRESHOLD) {
-            motorPeriods[0] = (1.0f / C4) * 1000000.0f;
+            motorPeriods[0] = (1.0f / C4) * 1000000.0f; // Convert target frequency to period in ms
         } else if (ads.a[1] > ACTUATE_THRESHOLD) {
             motorPeriods[0] = (1.0f / E4) * 1000000.0f;
         } else {
             motorPeriods[0] = 0;
         }
 
+        // Support for up to 2 simultaneous motors being actuated
         if (ads.a[2] > ACTUATE_THRESHOLD) {
             motorPeriods[1] = (1.0f / G4) * 1000000.0f;
         } else if (ads.a[3] > ACTUATE_THRESHOLD) {
@@ -77,6 +78,7 @@ int main(void) {
             motorPeriods[1] = 0;
         }
 
+        // Actuate motors if there are any scheduled notes
         for (int i = 0; i < NUM_MOTORS; i++) {
             if (motorPeriods[i] > 0) {
                 actuateMotor(i);
@@ -86,11 +88,7 @@ int main(void) {
 
 #elif DEMO_MODE == 1
     playMusic(kids_mgmt_melody);
-#elif DEMO_MODE == 2
-    playMusic(kids_mgmt_lower_phrase);
-    playMusic(kids_mgmt_lower_phrase_end_1);
-    playMusic(kids_mgmt_lower_phrase);
-    playMusic(kids_mgmt_lower_phrase_end_2);
+#endif
 
     pthread_cancel(updateThread);
     pthread_join(updateThread, NULL);
