@@ -1,53 +1,63 @@
-import librosa
-from pydub.generators import Sine
-from pydub.playback import play
-import sounddevice as sd
 import numpy as np
-import sys
+import scipy.io.wavfile as wav
+from scipy.signal import find_peaks
+import sounddevice as sd
 
-import musicalbeeps
+def read_wav_file(filename):
+    sample_rate, data = wav.read(filename)
+    if data.ndim > 1:
+        data = np.mean(data, axis=1)  # Convert to mono by averaging channels
+    return sample_rate, data
 
-note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-note_freqs = {
-    'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63,
-    'F': 349.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00,
-    'A#': 466.16, 'B': 493.88
-}
+def analyze_frequencies(data, sample_rate, frame_size=2048, hop_size=512):
+    window = np.hanning(frame_size)
+    frequencies = []
+    durations = []
+    time_index = 0
 
+    for start in range(0, len(data) - frame_size, hop_size):
+        frame = data[start:start + frame_size] * window
+        spectrum = np.fft.rfft(frame)
+        magnitude = np.abs(spectrum)
+        peak_indices, _ = find_peaks(magnitude, height=np.max(magnitude) * 0.5)
+        if peak_indices.size > 0:
+            peak_freq = peak_indices[0] * sample_rate / frame_size
+            if frequencies and isinstance(frequencies[-1], (int, float)) and np.isclose(peak_freq, frequencies[-1], atol=5):
+                durations[-1] += hop_size / sample_rate
+            else:
+                frequencies.append(peak_freq)
+                durations.append(hop_size / sample_rate)
+        else:
+            if frequencies and frequencies[-1] is not None:
+                frequencies.append(None)
+                durations.append(hop_size / sample_rate)
+        time_index += hop_size / sample_rate
 
-def chroma_to_note_name(frequency):
-    return note_names[note_pitch]
+    return frequencies, durations
 
-audio_file = sys.argv[1]
+def play_sine_wave(frequency, duration, sample_rate=44100, amplitude=0.5):
+    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+    wave = amplitude * np.sin(2 * np.pi * frequency * t)
+    sd.play(wave, samplerate=sample_rate)
+    sd.wait()  # Wait until sound has finished playing
 
-y, sr = librosa.load(audio_file)
-
-chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
-
-first = True
-notes = []
-prev_note_duration = 0
-
-for onset in onset_frames:
-  chroma_at_onset = chroma[:, onset]
-  note_pitch = chroma_at_onset.argmax()
-#   print(note_pitch)
-  note_name = chroma_to_note_name(note_pitch)
-
-  if not first:
-      note_duration = librosa.frames_to_time(onset, sr=sr)
-      notes.append((note_name,onset, note_duration - prev_note_duration))
-      prev_note_duration = note_duration
-  else:
-      prev_note_duration = librosa.frames_to_time(onset, sr=sr)
-      first = False
-      
-print("Note pitch \t Onset frame \t Note duration")
-for entry in notes:
-  print(entry[0],'\t\t',entry[1],'\t\t',entry[2])
-
-player = musicalbeeps.Player(volume = .3, mute_output = False)
-
-for entry in notes:
-  player.play_note(entry[0], round(entry[2], 2))
+def main(filename):
+    sample_rate, data = read_wav_file(filename)
+    frequencies, durations = analyze_frequencies(data, sample_rate)
+    notes = [(round(freq,2), round(dur,2)) for freq, dur in zip(frequencies, durations) if freq is not None]
+    
+    filtered_notes = [(freq, dur) for freq, dur in notes if dur >= 0.07]
+    # for note in filtered_notes:
+    #     print(f"Frequency: {note[0]:.2f} Hz, Duration: {note[1]:.2f} s")
+    for freq, dur in filtered_notes:
+        print(f"Frequency: {freq:.2f} Hz, Duration: {dur:.2f} s")
+        play_sine_wave(freq, dur)
+    
+    print("yongjae")
+    print(notes)
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <wav_file>")
+        sys.exit(1)
+    main(sys.argv[1])
