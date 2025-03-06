@@ -18,4 +18,4 @@ ads1115.o: ads1115.c ads1115.h
 	gcc -c ads1115.c -o ads1115.o
 
 clean:
-	rm -rf main.o test.o stepperTest.o ads1115.o stepper.o music.o main test stepperTest
+	rm -rf main.o ads1115.o stepper.o music.o main
