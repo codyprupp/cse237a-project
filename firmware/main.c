@@ -88,6 +88,11 @@ int main(void) {
 
 #elif DEMO_MODE == 1
     playMusic(kids_mgmt_melody);
+#elif DEMO_MODE == 2
+    playMusic(twinkle_melody, 120);
+#elif DEMO_MODE == 3
+    playMusic(clocks_melody, 122);
+    playMusic(clocks_melody, 122);
 #endif
 
     pthread_cancel(updateThread);
