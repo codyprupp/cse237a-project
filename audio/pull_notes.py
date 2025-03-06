@@ -5,6 +5,8 @@ import sounddevice as sd
 import numpy as np
 import sys
 
+import musicalbeeps
+
 note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 note_freqs = {
     'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63,
@@ -13,7 +15,7 @@ note_freqs = {
 }
 
 
-def chroma_to_note_name(note_pitch):
+def chroma_to_note_name(frequency):
     return note_names[note_pitch]
 
 audio_file = sys.argv[1]
@@ -44,3 +46,8 @@ for onset in onset_frames:
 print("Note pitch \t Onset frame \t Note duration")
 for entry in notes:
   print(entry[0],'\t\t',entry[1],'\t\t',entry[2])
+
+player = musicalbeeps.Player(volume = .3, mute_output = False)
+
+for entry in notes:
+  player.play_note(entry[0], round(entry[2], 2))
