@@ -9,28 +9,24 @@ def list_input_devices():
             print(f"{idx}: {device['name']}")
 
 def record_audio(filename, duration, sample_rate=44100, device_index=None):
-    """
-    Records audio from the microphone and saves it to a WAV file.
 
-    Parameters:
-    - filename: Name of the output WAV file.
-    - duration: Duration of the recording in seconds.
-    - sample_rate: Sampling rate (samples per second).
-    - device_index: Index of the input device to use (optional).
-    """
     try:
         print(f"Recording for {duration} seconds...")
         recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate,
                            channels=1, dtype='int16', device=device_index)
-        sd.wait()  # Wait until the recording is finished
+        sd.wait()  # wait until the recording is finished
+        
+        #save to file
+        filename = "audio/" + filename
         wav.write(filename, sample_rate, recording)
         print(f"Recording saved to {filename}")
     except Exception as e:
         print(f"An error occurred during recording: {e}")
 
 if __name__ == "__main__":
-    list_input_devices()  # Display available input devices
-    duration = 20  # Duration in seconds
-    filename = "recording.wav"
+    #request input device and then record for 20s
+    list_input_devices()  
     device_index = int(input("Enter the device index to use for recording: "))
+    filename = input("Enter file name: ") + ".wav"
+    duration = int(input("Enter recording duration in seconds: "))
     record_audio(filename, duration, device_index=device_index)

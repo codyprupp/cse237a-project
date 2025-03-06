@@ -48,10 +48,7 @@ const float clocks_melody[][2] = {
     {0, 0} // End marker
 };
 
-
 void playMusic(const float song[][2], float tempo) {
-    // printf("STARTING... (notes: %d)\n", numNotes); 
-
     for (int i = 0; (song[i][0] != 0) || (song[i][1] != 0); i++) {
         printf("%f ", song[i][0]);
         fflush(stdout);

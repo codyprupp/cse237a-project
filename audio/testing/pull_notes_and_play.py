@@ -14,14 +14,23 @@ def analyze_frequencies(data, sample_rate, frame_size=2048, hop_size=512):
     frequencies = []
     durations = []
     time_index = 0
+    
+    #iterate through frames by frame_size
 
     for start in range(0, len(data) - frame_size, hop_size):
+
+        #use fft to get amplitude v frequency then grab the most prominent frequencies
         frame = data[start:start + frame_size] * window
         spectrum = np.fft.rfft(frame)
         magnitude = np.abs(spectrum)
+        
         peak_indices, _ = find_peaks(magnitude, height=np.max(magnitude) * 0.5)
+
+
         if peak_indices.size > 0:
             peak_freq = peak_indices[0] * sample_rate / frame_size
+            #if new frequency/note is similar to the previous one, just extend duration of the previous note
+            #otherwise, add as a new note
             if frequencies and isinstance(frequencies[-1], (int, float)) and np.isclose(peak_freq, frequencies[-1], atol=5):
                 durations[-1] += hop_size / sample_rate
             else:
@@ -46,9 +55,10 @@ def main(filename):
     frequencies, durations = analyze_frequencies(data, sample_rate)
     notes = [(round(freq,2), round(dur,2)) for freq, dur in zip(frequencies, durations) if freq is not None]
     
+    #reduce noise by filtering out notes that aren't long enough
     filtered_notes = [(freq, dur) for freq, dur in notes if dur >= 0.07]
-    # for note in filtered_notes:
-    #     print(f"Frequency: {note[0]:.2f} Hz, Duration: {note[1]:.2f} s")
+
+    #play pulled notes
     for freq, dur in filtered_notes:
         print(f"Frequency: {freq:.2f} Hz, Duration: {dur:.2f} s")
         play_sine_wave(freq, dur)

@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 
     initMotors();
 
-    //grab notes using script:
+    //run script to get notes file
     char * audiofile = argv[1];
     char * script = "pull_notes_to_file.py";
     char pycmd[512];
@@ -22,7 +22,6 @@ int main(int argc, char* argv[]) {
     snprintf(pycmd, sizeof(pycmd), "python3 %s %s", script, audiofile);
 
     int result = system(pycmd);
-
 
     if (result == -1) {
         printf("err\n");
@@ -39,12 +38,12 @@ int main(int argc, char* argv[]) {
     snprintf(notesfilepath, sizeof(notesfilepath), "notesfiles/%s.txt", notesfile); 
 
     FILE * file = fopen(notesfilepath, "r");
-    printf(notesfilepath);
     if (file == NULL) {
         perror("Error opening file");
         return 1;
     }
 
+    //iterate through notes read from script
     float freq, dur;
     while(fscanf(file, "%f,%f", &freq, &dur) == 2) { 
         if (notesfile[0] == 'b') {
