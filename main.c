@@ -79,11 +79,14 @@ int main(void) {
     //     // printf("\n");
     // }
 
-    playMusic(kids_mgmt_melody);
-    playMusic(kids_mgmt_lower_phrase);
-    playMusic(kids_mgmt_lower_phrase_end_1);
-    playMusic(kids_mgmt_lower_phrase);
-    playMusic(kids_mgmt_lower_phrase_end_2);
+    // playMusic(kids_mgmt_melody, 122);
+    playMusic(twinkle_melody, 120);
+    // playMusic(clocks_melody, 122);
+    // playMusic(clocks_melody, 122);
+    // playMusic(kids_mgmt_lower_phrase);
+    // playMusic(kids_mgmt_lower_phrase_end_1);
+    // playMusic(kids_mgmt_lower_phrase);
+    // playMusic(kids_mgmt_lower_phrase_end_2);
 
     pthread_cancel(updateThread);
     pthread_join(updateThread, NULL);

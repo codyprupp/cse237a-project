@@ -83,7 +83,9 @@ extern const float kids_mgmt_melody[][2];
 extern const float kids_mgmt_lower_phrase[][2];
 extern const float kids_mgmt_lower_phrase_end_1[][2];
 extern const float kids_mgmt_lower_phrase_end_2[][2];
+extern const float twinkle_melody[][2];
+extern const float clocks_melody[][2];
 
-void playMusic(const float song[][2]);
+void playMusic(const float song[][2], float tempo);
 
 #endif
