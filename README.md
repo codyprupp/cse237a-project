@@ -79,7 +79,10 @@ project-root/
 4. **To Play a Predefined Song**:
    Modify `DEMO_MODE` in `main.c` and recompile.
 5. **To record live and save to a playable audiofile**:
-   
+   ```sh
+   python record.py
+   ```
+   in audio/
 ## Future Work
 - Expand the number of playable notes.
 - Improve motor response time for lower latency.
