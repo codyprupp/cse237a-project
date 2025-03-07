@@ -86,7 +86,7 @@ project-root/
 ## Future Work
 - Expand the number of playable notes.
 - Improve motor response time for lower latency.
-- Implement more advanced music processing features.
+- Implement more accurate and advanced music processing features, such as an ML model to try to recognize notes better through noisy audiofiles, and/or an   audio separation algorithm such as Blind Source Separation to better distinguish concurrent notes. 
 - Develop a user interface for easier configuration.
 
 ## Authors
