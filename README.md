@@ -5,7 +5,7 @@ The goal of this project is to create an electronic xylophone that provides addi
 - Playing music from pre-recorded audio files.
 - Replaying music heard live through a connected microphone.
 
-These functionalities are not typically possible with a standard physical xylophone. The long-term vision is to expand this project to other instruments, creating a product line that appeals to both professional and casual musicians.
+These functionalities are not typically possible with a standard physical xylophone. Additionally, having it be electronic also lends itself to very easily allow us to implement and add any sort of features we would want in the future, for example if we wanted to create a feature for playing speed, we could implement that easily without having to overhaul the entire project. The long-term vision is also to expand this project to other instruments, creating a product line that appeals to both professional and casual musicians.
 
 ## Related Work
 There have been various projects that use stepper motors to generate audio output. Additionally, electronic xylophones have been created using pressure or capacitive sensors to trigger sounds through speakers. This project aims to combine these ideas by introducing:
@@ -78,7 +78,8 @@ project-root/
    ```
 4. **To Play a Predefined Song**:
    Modify `DEMO_MODE` in `main.c` and recompile.
-
+5. **To record live and save to a playable audiofile**:
+   
 ## Future Work
 - Expand the number of playable notes.
 - Improve motor response time for lower latency.
